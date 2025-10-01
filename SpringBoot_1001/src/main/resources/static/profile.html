@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+      }
+      .card {
+        max-width: 720px;
+        padding: 24px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      button {
+        padding: 8px 12px;
+        margin: 6px;
+      }
+      code {
+        background: #f6f8fa;
+        padding: 10px;
+        display: block;
+        white-space: pre-wrap;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      a {
+        margin-left: 8px;
+      }
+    </style>
+    <script defer src="/mainjs.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", async () => {
+        const accessToken = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+        const info = document.getElementById("info");
+        const output = document.getElementById("output");
+        const username = localStorage.getItem("username") || "Unknown";
+        info.textContent = `Logged in as: ${username}`;
+
+        document.getElementById("btnUser").onclick = async () => {
+          output.textContent = await window.API.get("/api/test/user");
+        };
+        document.getElementById("btnAdmin").onclick = async () => {
+          output.textContent = await window.API.get("/api/test/admin");
+        };
+        document.getElementById("btnPublic").onclick = async () => {
+          output.textContent = await window.API.get("/api/test/public", false);
+        };
+        document.getElementById("btnRefresh").onclick = async () => {
+          const res = await window.API.refresh(refreshToken);
+          localStorage.setItem("accessToken", res.accessToken);
+          localStorage.setItem("refreshToken", res.refreshToken);
+          output.textContent = "Refreshed token OK";
+        };
+        document.getElementById("btnLogout").onclick = () => {
+          localStorage.clear();
+          window.location.href = "/login.html";
+        };
+      });
+    </script>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Profile</h2>
+      <div id="info"></div>
+      <div class="row">
+        <button id="btnUser">Call /api/test/user</button>
+        <button id="btnAdmin">Call /api/test/admin</button>
+        <button id="btnPublic">Call /api/test/public</button>
+        <button id="btnRefresh">Refresh Token</button>
+        <button id="btnLogout">Logout</button>
+        <a href="/login.html">Back to Login</a>
+      </div>
+      <h3>Response</h3>
+      <code id="output">Click a button to call API...</code>
+    </div>
+  </body>
+</html>
