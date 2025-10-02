@@ -1,72 +1,154 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Sản Phẩm - Demo 3</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Demo 3 - Spring Security</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/">Trang Chủ</a>
-                <a class="nav-link" href="/customer">Khách Hàng</a>
-                <a class="nav-link" href="/admin">Quản Trị</a>
-                <a class="nav-link" href="/logout">Đăng Xuất</a>
-            </div>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Sản Phẩm Admin - Spring Security Demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="/css/style.css" rel="stylesheet" />
+    <style>
+      body {
+        background: var(--light-color);
+      }
+      .admin-header {
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+      .admin-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+      .admin-header p {
+        color: var(--gray-600);
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-shield-alt"></i> Spring Security Demo
+        </a>
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link" href="/">Trang Chủ</a>
+          <a class="nav-link" href="/customer">Khách Hàng</a>
+          <a class="nav-link" href="/admin">Quản Trị</a>
+          <form th:action="@{/logout}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-secondary btn-sm">
+              <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+            </button>
+          </form>
         </div>
+      </div>
     </nav>
 
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Quản Lý Sản Phẩm</h2>
-                    <a href="/admin/products/new" class="btn btn-primary">Thêm Sản Phẩm Mới</a>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên Sản Phẩm</th>
-                                <th>Mô Tả</th>
-                                <th>Giá</th>
-                                <th>Tồn Kho</th>
-                                <th>Trạng Thái</th>
-                                <th>Thao Tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="product : ${products}">
-                                <td th:text="${product.id}">1</td>
-                                <td th:text="${product.name}">Product Name</td>
-                                <td th:text="${#strings.abbreviate(product.description, 50)}">Description</td>
-                                <td th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">0</td>
-                                <td th:text="${product.stock}">0</td>
-                                <td>
-                                    <span th:if="${product.active}" class="badge bg-success">Hoạt động</span>
-                                    <span th:unless="${product.active}" class="badge bg-secondary">Ngừng hoạt động</span>
-                                </td>
-                                <td>
-                                    <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning me-1">Sửa</a>
-                                    <a th:href="@{/admin/products/delete/{id}(id=${product.id})}" 
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">Xóa</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div th:if="${products == null or products.empty}" class="alert alert-info">
-                    <p>Chưa có sản phẩm nào. <a href="/admin/products/new">Thêm sản phẩm đầu tiên</a></p>
-                </div>
-            </div>
+    <div class="container">
+      <!-- Admin Header -->
+      <div class="admin-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1><i class="fas fa-boxes"></i> Quản Lý Sản Phẩm Admin</h1>
+            <p>Quản lý và điều hành hệ thống sản phẩm</p>
+          </div>
+          <a href="/admin/products/new" class="btn btn-success">
+            <i class="fas fa-plus"></i> Thêm Sản Phẩm Mới
+          </a>
         </div>
+      </div>
+
+      <!-- Products Table -->
+      <div class="table-container">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><i class="fas fa-hashtag"></i> ID</th>
+                <th><i class="fas fa-tag"></i> Tên Sản Phẩm</th>
+                <th><i class="fas fa-align-left"></i> Mô Tả</th>
+                <th><i class="fas fa-dollar-sign"></i> Giá</th>
+                <th><i class="fas fa-boxes"></i> Tồn Kho</th>
+                <th><i class="fas fa-toggle-on"></i> Trạng Thái</th>
+                <th><i class="fas fa-cogs"></i> Thao Tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="product : ${products}">
+                <td th:text="${product.id}" class="fw-bold">1</td>
+                <td th:text="${product.name}">Product Name</td>
+                <td th:text="${#strings.abbreviate(product.description, 50)}">
+                  Description
+                </td>
+                <td
+                  class="price"
+                  th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'"
+                >
+                  0
+                </td>
+                <td th:text="${product.stock}">0</td>
+                <td>
+                  <span th:if="${product.active}" class="badge badge-success"
+                    >Hoạt động</span
+                  >
+                  <span
+                    th:unless="${product.active}"
+                    class="badge badge-secondary"
+                    >Ngừng hoạt động</span
+                  >
+                </td>
+                <td>
+                  <a
+                    th:href="@{/admin/products/edit/{id}(id=${product.id})}"
+                    class="btn btn-warning btn-sm"
+                  >
+                    <i class="fas fa-edit"></i> Sửa
+                  </a>
+                  <a
+                    th:href="@{/admin/products/delete/{id}(id=${product.id})}"
+                    class="btn btn-danger btn-sm"
+                    onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')"
+                  >
+                    <i class="fas fa-trash"></i> Xóa
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        th:if="${products == null or products.empty}"
+        class="text-center py-5"
+      >
+        <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">Chưa có sản phẩm nào</h4>
+        <p class="text-muted">Hãy thêm sản phẩm đầu tiên vào hệ thống!</p>
+        <a href="/admin/products/new" class="btn btn-success">
+          <i class="fas fa-plus"></i> Thêm Sản Phẩm Đầu Tiên
+        </a>
+      </div>
     </div>
-</body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

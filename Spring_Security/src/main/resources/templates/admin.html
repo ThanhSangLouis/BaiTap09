@@ -1,59 +1,219 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Page - Demo 2</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-                        <h2>Trang Quản Trị - Demo 2</h2>
-                        <div>
-                            <span class="badge bg-light text-dark me-2" th:text="${#authentication.name}">Admin</span>
-                            <a href="/logout" class="btn btn-outline-light btn-sm">Đăng Xuất</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-danger">
-                            <h4 th:text="${message}">Message</h4>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header bg-primary text-white">
-                                        <h5>Quản Lý User</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <a href="/admin/add-user" class="btn btn-primary w-100">Thêm User Mới</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header bg-success text-white">
-                                        <h5>Thống Kê</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>Chức năng thống kê sẽ được phát triển trong Demo 3</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center mt-4">
-                            <a href="/customer" class="btn btn-secondary me-2">Xem Danh Sách Khách Hàng</a>
-                            <a href="/hello" class="btn btn-outline-secondary">Trang Chủ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang Quản Trị - Spring Security Demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="/css/style.css" rel="stylesheet" />
+    <style>
+      body {
+        background: var(--light-color);
+      }
+      .admin-header {
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+      .admin-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+      .admin-header p {
+        color: var(--gray-600);
+        margin-bottom: 0;
+      }
+      .feature-card {
+        background: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+      }
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      .feature-card.primary .feature-icon {
+        color: var(--primary-color);
+      }
+      .feature-card.success .feature-icon {
+        color: var(--success-color);
+      }
+      .feature-card.warning .feature-icon {
+        color: var(--warning-color);
+      }
+      .feature-card.danger .feature-icon {
+        color: var(--danger-color);
+      }
+      .user-info {
+        background: var(--gray-100);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-shield-alt"></i> Spring Security Demo
+        </a>
+        <div class="navbar-nav ms-auto">
+          <div
+            sec:authorize="isAuthenticated()"
+            class="d-flex align-items-center"
+          >
+            <span class="text-gray-600 me-3">
+              <i class="fas fa-user"></i>
+              <span sec:authentication="name">Username</span>
+              <span class="badge badge-primary ms-2">Admin</span>
+            </span>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-secondary btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Đăng Xuất
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Admin Header -->
+      <div class="admin-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h1><i class="fas fa-crown"></i> Trang Quản Trị</h1>
+            <p>Chào mừng bạn đến với bảng điều khiển quản trị hệ thống</p>
+          </div>
+          <div class="user-info">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-user-circle fa-2x text-primary me-3"></i>
+              <div>
+                <div class="fw-bold" th:text="${#authentication.name}">
+                  Admin
+                </div>
+                <div class="text-muted small">Quản trị viên hệ thống</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Welcome Message -->
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <strong>Thông báo:</strong>
+        <span th:text="${message}">Chào mừng bạn đến với trang quản trị!</span>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-card primary">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h4>Quản Lý User</h4>
+            <p class="text-muted">Thêm và quản lý người dùng trong hệ thống</p>
+            <a href="/admin/add-user" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Thêm User Mới
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-card success">
+            <div class="feature-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <h4>Thống Kê</h4>
+            <p class="text-muted">Xem báo cáo và thống kê hệ thống</p>
+            <button class="btn btn-success" disabled>
+              <i class="fas fa-chart-line"></i> Đang Phát Triển
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-card warning">
+            <div class="feature-icon">
+              <i class="fas fa-users-cog"></i>
+            </div>
+            <h4>Khách Hàng</h4>
+            <p class="text-muted">Xem danh sách khách hàng</p>
+            <a href="/customer" class="btn btn-warning">
+              <i class="fas fa-list"></i> Xem Danh Sách
+            </a>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-card danger">
+            <div class="feature-icon">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <h4>Cài Đặt</h4>
+            <p class="text-muted">Cấu hình và cài đặt hệ thống</p>
+            <button class="btn btn-danger" disabled>
+              <i class="fas fa-tools"></i> Đang Phát Triển
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-bolt"></i> Thao Tác Nhanh</h3>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <a href="/customer" class="btn btn-outline-primary w-100">
+                <i class="fas fa-users"></i> Xem Danh Sách Khách Hàng
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a href="/" class="btn btn-outline-secondary w-100">
+                <i class="fas fa-home"></i> Về Trang Chủ
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a href="/admin/add-user" class="btn btn-outline-success w-100">
+                <i class="fas fa-user-plus"></i> Thêm User Mới
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

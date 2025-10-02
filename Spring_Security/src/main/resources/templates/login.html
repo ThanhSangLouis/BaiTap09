@@ -1,129 +1,160 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html
+  lang="vi"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng Nhập - Spring Security Demo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="/css/style.css" rel="stylesheet" />
     <style>
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            width: 100%;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
-        }
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .login-header h2 {
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .login-header p {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        .form-floating {
-            margin-bottom: 1rem;
-        }
-        .form-control {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 10px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            color: white;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-        .demo-accounts {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-top: 1.5rem;
-        }
-        .demo-accounts h6 {
-            color: #495057;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .demo-account {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-bottom: 0.25rem;
-        }
+      body {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .login-container {
+        width: 100%;
+        max-width: 420px;
+      }
+      .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .login-header h1 {
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      .login-header p {
+        color: var(--gray-600);
+        font-size: 1rem;
+      }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      .form-control {
+        padding: 1rem;
+        font-size: 1rem;
+      }
+      .btn-login {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+      .demo-accounts {
+        background: var(--gray-100);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+      .demo-accounts h6 {
+        color: var(--gray-700);
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      .demo-account {
+        font-size: 0.9rem;
+        color: var(--gray-600);
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        background: var(--white);
+        border-radius: 8px;
+        border-left: 4px solid var(--primary-color);
+      }
+      .demo-account strong {
+        color: var(--primary-color);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="login-container">
-        <div class="login-header">
-            <h2><i class="fas fa-shield-alt text-primary"></i> Đăng Nhập</h2>
+      <div class="card">
+        <div class="card-header">
+          <div class="login-header">
+            <h1><i class="fas fa-shield-alt"></i> Đăng Nhập</h1>
             <p>Spring Security Demo Application</p>
+          </div>
         </div>
-        
-        <div th:if="${param.error}" class="alert alert-danger" role="alert">
-            <i class="fas fa-exclamation-triangle"></i> Email hoặc mật khẩu không đúng!
-        </div>
-        
-        <div th:if="${param.logout}" class="alert alert-success" role="alert">
+
+        <div class="card-body">
+          <div th:if="${param.error}" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> Email hoặc mật khẩu
+            không đúng!
+          </div>
+
+          <div th:if="${param.logout}" class="alert alert-success" role="alert">
             <i class="fas fa-check-circle"></i> Bạn đã đăng xuất thành công!
-        </div>
-        
-        <form th:action="@{/login}" method="post">
-            <div class="form-floating">
-                <input type="email" class="form-control" id="username" name="username" placeholder="Email" required>
-                <label for="username"><i class="fas fa-envelope"></i> Email</label>
+          </div>
+
+          <form th:action="@{/login}" method="post">
+            <div class="form-group">
+              <label for="username" class="form-label">
+                <i class="fas fa-envelope"></i> Email
+              </label>
+              <input
+                type="email"
+                class="form-control"
+                id="username"
+                name="username"
+                placeholder="Nhập email của bạn"
+                required
+              />
             </div>
-            
-            <div class="form-floating">
-                <input type="password" class="form-control" id="password" name="password" placeholder="Mật khẩu" required>
-                <label for="password"><i class="fas fa-lock"></i> Mật khẩu</label>
+
+            <div class="form-group">
+              <label for="password" class="form-label">
+                <i class="fas fa-lock"></i> Mật khẩu
+              </label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="Nhập mật khẩu"
+                required
+              />
             </div>
-            
-            <button type="submit" class="btn btn-login">
-                <i class="fas fa-sign-in-alt"></i> Đăng Nhập
+
+            <button type="submit" class="btn btn-primary btn-login">
+              <i class="fas fa-sign-in-alt"></i> Đăng Nhập
             </button>
-        </form>
-        
-        <div class="demo-accounts">
+          </form>
+
+          <div class="demo-accounts">
             <h6><i class="fas fa-info-circle"></i> Tài khoản demo:</h6>
-            <div class="demo-account"><strong>Admin:</strong> admin@demo.com / admin123</div>
-            <div class="demo-account"><strong>User:</strong> user@demo.com / user123</div>
-            <div class="demo-account"><strong>Demo:</strong> demo@demo.com / demo123</div>
+            <div class="demo-account">
+              <strong>Admin:</strong> admin@demo.com / admin123
+            </div>
+            <div class="demo-account">
+              <strong>User:</strong> user@demo.com / user123
+            </div>
+            <div class="demo-account">
+              <strong>Demo:</strong> demo@demo.com / demo123
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </body>
 </html>
