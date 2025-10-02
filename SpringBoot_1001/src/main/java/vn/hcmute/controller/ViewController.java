@@ -11,6 +11,11 @@ public class ViewController {
         return "forward:/login.html";
     }
 
+    @GetMapping("/register")
+    public String registerPage() {
+        return "forward:/register.html";
+    }
+
     @GetMapping("/profile")
     public String profilePage() {
         return "forward:/profile.html";

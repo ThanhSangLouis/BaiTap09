@@ -27,6 +27,12 @@ window.API = (() => {
         { method: "POST", body: JSON.stringify(body) },
         false
       ),
+    register: (body) =>
+      request(
+        "/api/auth/register",
+        { method: "POST", body: JSON.stringify(body) },
+        false
+      ),
     refresh: (refreshToken) =>
       request(
         "/api/auth/refresh",
